@@ -19,3 +19,18 @@ Mask:
 
 Ограничение: Все задания надо выполнять используя только пройденные темы.
 '''
+
+prefix = input('Введите префикс в формате x.x.x.x/x: ')
+
+ip = prefix.split('/')[0]
+ip = ip.split('.')
+mask = prefix.split('/')[1]
+mask = int(mask)
+
+one = '1' * mask
+mask2 = (one) + ('0' * (32 - (one.count('1'))))
+
+mask2 = [mask2[0:8], mask2[8:16], mask2[16:24], mask2[24:32]]
+
+print('Network:\n{0:<8}  {1:<8}  {2:<8}  {3:<8}\n{0:>08b}  {1:>08b}  {2:>08b}  {3:>08b}'.format(int(ip[0]), int(ip[1]), int(ip[2]), int(ip[3])))
+print('\nMask:\n/{0}\n{1:<8}  {2:<8}  {3:<8}  {4:<8}\n{5}  {6}  {7}  {8}'.format(mask, int(mask2[0],2), int(mask2[1],2), int(mask2[2],2), int(mask2[3],2), mask2[0], mask2[1], mask2[2], mask2[3]))
