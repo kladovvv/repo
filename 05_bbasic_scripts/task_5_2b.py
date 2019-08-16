@@ -30,3 +30,5 @@ Mask:
 /{mask}
 {mask_oct1:<8}  {mask_oct2:<8}  {mask_oct3:<8}  {mask_oct4:<8}
 {mask_oct1:08b}  {mask_oct2:08b}  {mask_oct3:08b}  {mask_oct4:08b}''')
+
+input()
