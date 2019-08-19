@@ -50,8 +50,21 @@ access_template = [
     'switchport nonegotiate', 'spanning-tree portfast',
     'spanning-tree bpduguard enable'
 ]
+access_template = '\n'.join(access_template)
+
 
 trunk_template = [
     'switchport trunk encapsulation dot1q', 'switchport mode trunk',
     'switchport trunk allowed vlan {}'
 ]
+trunk_template = '\n'.join(trunk_template)
+
+ty = input('введите режим работы интерфейса (access/trunk): ')
+type_number = input('введите тип и номер интерфейса: ')
+vlan = input('введите номер влан(ов): ')
+
+dic = {'access': 'interface {}\n' + access_template,
+'trunk': 'interface {}\n' + trunk_template}
+
+print(dic[ty].format(type_number, vlan))
+
