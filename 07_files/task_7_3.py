@@ -17,3 +17,13 @@
 Ограничение: Все задания надо выполнять используя только пройденные темы.
 
 '''
+
+with open('CAM_table.txt') as file:
+    for stroka in file:
+        stroka = stroka.split()
+        if stroka and stroka[0].isdigit():
+            print(f"{stroka[0]:7}{stroka[1]:17}{stroka[3]:5}")
+
+
+input()
+
