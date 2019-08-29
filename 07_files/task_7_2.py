@@ -12,3 +12,16 @@
 
 Ограничение: Все задания надо выполнять используя только пройденные темы.
 '''
+
+'''
+from sys import argv
+with open(sys.argv[1], 'r') as f
+'''
+
+with open('config_sw1.txt') as f:
+    for line in f:
+        if not line.startswith('!'):
+            print(line.rstrip())
+input()
+
+

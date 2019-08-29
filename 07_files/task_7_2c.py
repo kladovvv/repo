@@ -16,4 +16,15 @@
 Ограничение: Все задания надо выполнять используя только пройденные темы.
 '''
 
+import sys
+
 ignore = ['duplex', 'alias', 'Current configuration']
+
+with open(sys.argv[1], 'r') as f, open(sys.argv[2], 'w') as dest:
+    for line in f:
+        line_list = line.split()
+        for i in ignore:
+            if i in line_list:
+                break
+        else:
+            dest.write(line.rstrip() + '\n')        
