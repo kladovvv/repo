@@ -22,16 +22,12 @@
 
 '''
 
+# Входные данные
+
 access_mode_template = [
     'switchport mode access', 'switchport access vlan',
     'switchport nonegotiate', 'spanning-tree portfast',
     'spanning-tree bpduguard enable'
-]
-
-port_security_template = [
-    'switchport port-security maximum 2',
-    'switchport port-security violation restrict',
-    'switchport port-security'
 ]
 
 access_config = {
@@ -40,33 +36,41 @@ access_config = {
     'FastEthernet0/16': 17
 }
 
-def generate_access_config(intf_vlan_mapping, access_template, security_template, psecurity = None):
+port_security_template = [
+    'switchport port-security maximum 2',
+    'switchport port-security violation restrict',
+    'switchport port-security'
+]
+
+def generate_access_config(intf_vlan_mapping, access_template, psecurity = None):
     '''
     intf_vlan_mapping - словарь с соответствием интерфейс-VLAN такого вида:
         {'FastEthernet0/12':10,
          'FastEthernet0/14':11,
          'FastEthernet0/16':17}
     access_template - список команд для порта в режиме access
+
     Возвращает список всех портов в режиме access с конфигурацией на основе шаблона
     '''
-    interface_access = []
+    spisok = []
     for interface, vlan in intf_vlan_mapping.items():
-        interface_access.append(interface)
-        for string in access_template:
-            if string.endswith('vlan'):
-                interface_access.append(f"{string} {vlan}")
+        spisok.append('interface ' + interface)
+        for command in access_template:
+            if command.endswith('vlan'):
+                spisok.append(command + ' ' + str(vlan))
             else:
-                interface_access.append(string)
-        for string_sec in security_template:    
-            if psecurity:
-                interface_access.append(string_sec)
-    return interface_access
+                spisok.append(command)
+        if psecurity:
+            spisok.extend(psecurity)
+    return spisok
 
-result = generate_access_config(access_config, access_mode_template, port_security_template, psecurity = True)
 
-for i in result:
-    print(i)
+# Выполнение программы
 
+print(generate_access_config(access_config, access_mode_template, psecurity = port_security_template))
+
+
+# Пауза
 input()
 
 

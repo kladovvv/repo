@@ -20,6 +20,10 @@
 Ограничение: Все задания надо выполнять используя только пройденные темы.
 '''
 
+
+# Входные данные
+
+
 ignore = ['duplex', 'alias', 'Current configuration']
 
 
@@ -35,3 +39,30 @@ def ignore_command(command, ignore):
     * False - если нет
     '''
     return any(word in command for word in ignore)
+
+
+
+# Выполнение программы
+
+def convert_config_to_dict(config_filename):
+    with open(config_filename) as config:
+        conf = {}
+        spisok = []
+        for line in config:
+            if line[0] == '!' or ignore_command(line, ignore):
+                continue
+            elif line[0] != ' ':
+                spisok = []
+                conf[line.rstrip()] = spisok
+            else:
+                spisok.append(line.strip())
+            
+    return conf        
+
+result = convert_config_to_dict('config_sw1.txt')
+
+for key, item in result.items():
+    print(f"{key}: {item}")
+
+# Пауза
+input()
