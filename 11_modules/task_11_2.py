@@ -44,6 +44,8 @@ Cгенерировать топологию, которая соответст�
 
 # Входные данные
 from check import parse_cdp_neighbors
+from draw_network_graph import draw_topology
+
 
 filenames = [
 'sh_cdp_n_sw1.txt',
@@ -61,7 +63,8 @@ def create_network_map(filenames):
         file.close()
     return network
 
-print(create_network_map(filenames))
+result = create_network_map(filenames)
+draw_topology(result)
 
 # Пауза
 input()
