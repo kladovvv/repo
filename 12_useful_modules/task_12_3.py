@@ -47,23 +47,23 @@ def convert_ranges_to_ip_list(list_of_range_ip):
 def print_ip_table(reach, unreach):
     columns = ['reachable', 'unreachable']
     list1 = []
-    for c in columns:
-        if c == 'reachable':
-            for r in reach:
-                list1.append({c: r})
-        elif c == 'unreachable':
-            for u in unreach:
-                list1.append({c: u})
-    print(list1)
-    return print(tabulate(list1, headers='keys'))
+    if len(reach) > len(unreach):
+        for i in range(len(unreach)):
+            list1.append((reach[i], unreach[i]))
+        for j in range(len(unreach), len(reach)):
+            list1.append((reach[j], ' '))
+        return print(tabulate(list1, headers=columns))
+    elif len(unreach) > len(reach):
+        for i in range(len(reach)):
+            list1.append((reach[i], unreach[i]))
+        for j in range(len(reach), len(unreach)):
+            list1.append((' ', unreach[j]))
+        return print(tabulate(list1, headers=columns))
+    else:
+        return print(tabulate(zip(reach, unreach), headers=columns))
 
 
-list_of_ip = ['10.135.7.52-10.135.7.53', '10.135.7.30-31', '8.8.8.8']
+list_of_ip = ['10.135.7.52-53', '1.1.1.1-1.1.1.2', '8.8.8.8']
 print(convert_ranges_to_ip_list(list_of_ip))
 ip_good, ip_bad = ping_ip_addresses(convert_ranges_to_ip_list(list_of_ip))
 print_ip_table(ip_good, ip_bad)
-
-ccc = ['reachable', 'unreachable']
-ppp = [('1.1.1.1', '8.8.8.8'), ('2.2.2.2', '3.3.3.3'), ('7.7.7.7',), ('6.6.6.6',)]
-print(tabulate(ppp, headers=ccc))
-input()
