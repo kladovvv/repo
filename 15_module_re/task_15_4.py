@@ -22,4 +22,21 @@ interface Loopback0
 
 Проверить работу функции на примере файла config_r1.txt.
 '''
+import re
 
+
+def get_ints_without_description(filename):
+    intf_desc = []
+    intf = []
+    with open(filename) as file:
+        for match in re.finditer('interface (?P<intf>\S+)\s+description', file.read()):
+            intf_desc.append(match.group('intf'))
+        file.seek(0)
+        for f in file:
+            match2 = re.search('interface (?P<intf2>\S+[\d+/])', f)
+            if match2 and not match2.group('intf2') in intf_desc:
+                intf.append(match2.group('intf2'))
+    return intf
+
+
+print(get_ints_without_description('config_r1.txt'))

@@ -25,3 +25,19 @@
 
 Ограничение: Все задания надо выполнять используя только пройденные темы.
 '''
+import re
+from pprint import pprint
+from task_15_2 import parse_sh_ip_int_br
+
+
+def convert_to_dict(head, tuples):
+    result = []
+    for tup in tuples:
+        dic = {h: t for h, t in zip(head, tup)}
+        result.append(dic)
+    return result
+
+
+headers = ['interface', 'address', 'status', 'protocol']
+sh_ip = parse_sh_ip_int_br('sh_ip_int_br.txt')
+pprint(convert_to_dict(headers, sh_ip))

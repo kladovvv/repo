@@ -21,3 +21,19 @@
 Проверить работу функции на примере файла sh_ip_int_br.txt.
 
 '''
+import re
+from pprint import pprint
+
+
+def parse_sh_ip_int_br(filename):
+    file = open(filename).read()
+    sh_ip = re.findall('(?P<intf>\S+) +'
+                       '(?P<ip>(?:\d+\.)+\d+|unassigned) +'
+                       '\S+ \S+ +'
+                       '(?P<status>up|\S+ down) +'
+                       '(?P<protocol>up|down)', file)
+    return sh_ip
+
+
+if __name__ == "__main__":
+    pprint(parse_sh_ip_int_br('sh_ip_int_br.txt'))
