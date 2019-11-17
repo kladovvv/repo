@@ -32,3 +32,29 @@
 Проверить работу параметра save_to_filename и записать итоговый словарь в файл topology.yaml.
 
 '''
+import yaml
+from pprint import pprint
+from task_17_2 import parse_sh_cdp_neighbors
+
+
+def generate_topology_from_cdp(list_of_files, save_to_filename = None):
+    dict_from_files = {}
+    for file in list_of_files:
+        with open(file) as open_file:
+            dict_from_files.update(parse_sh_cdp_neighbors(open_file.read()))
+    if save_to_filename:
+        with open(save_to_filename, 'w') as f:
+            yaml.dump(dict_from_files, f)
+    else: return dict_from_files
+
+
+list_sh_cdp = [
+'sh_cdp_n_sw1.txt',
+'sh_cdp_n_r1.txt',
+'sh_cdp_n_r2.txt',
+'sh_cdp_n_r3.txt',
+'sh_cdp_n_r4.txt',
+'sh_cdp_n_r5.txt',
+'sh_cdp_n_r6.txt']
+
+pprint(generate_topology_from_cdp(list_sh_cdp, save_to_filename='topology.yaml'))

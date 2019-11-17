@@ -25,6 +25,20 @@ R6           Fa 0/2          143           R S I           2811       Fa 0/0
 Проверить работу функции на содержимом файла sh_cdp_n_sw1.txt
 '''
 import re
+from pprint import pprint
+
 
 def parse_sh_cdp_neighbors(command):
     cdp_dict = {}
+    local_dev = re.search(r'(?P<local_dev>\S+)[#>]', command).group(1)
+    cdp_dict[local_dev] = {}
+    match = re.finditer(r'(?P<remote_dev>\S+)\s+(?P<local_int>\S+ \d/\d).+?(?P<remote_int>\S+ \d/\d)', command)
+    for m in match:
+        cdp_dict[local_dev][m.group('local_int')] = {}
+        cdp_dict[local_dev][m.group('local_int')][m.group('remote_dev')] = m.group('remote_int')
+    return cdp_dict
+
+
+if __name__ == "__main__":
+    with open('sh_cdp_n_sw1.txt') as file:
+        pprint(parse_sh_cdp_neighbors(file.read()))
