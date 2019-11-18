@@ -33,24 +33,19 @@
 '''
 import yaml
 from pprint import pprint
+from draw_network_graph import draw_topology
 
 
 def transform_topology(yaml_filename):
     draw_dict = {}
     with open(yaml_filename) as top:
         topology = yaml.safe_load(top)
-        for key, value in topology.items():
-            for value_key, value_value in value.items():
-                for value_value_key, value_value_value in value_value.items():
-                    temp_dict = {(key, value_key): (value_value_key, value_value_value)}
-                    draw_dict.update(temp_dict)
-    d = {}
-    for k in draw_dict.keys():
-        for v in draw_dict.values():
-            if k == v:
-                break
-            else:
+        for k1, v1 in topology.items():
+            for k2, v2 in v1.items():
+                if not set(v2.items()) & set(draw_dict.keys()):
+                    draw_dict.update({(k1, k2): (k3, v3) for k3, v3 in v2.items()})
     return draw_dict
 
 
 pprint(transform_topology('topology.yaml'))
+draw_topology(transform_topology('topology.yaml'), out_filename='my_17b_topology')
