@@ -5,7 +5,6 @@ from tabulate import tabulate
 
 def get_data(db_filename):
     conn = sqlite3.connect(db_filename)
-    #cursor = conn.cursor()
     conn.row_factory = sqlite3.Row
     if len(sys.argv) == 1:
         print('В таблице dhcp такие записи:')
