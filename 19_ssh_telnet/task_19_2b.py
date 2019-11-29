@@ -92,9 +92,38 @@ R1(config)#logging
 R1(config)#i
 % Ambiguous command:  "i"
 '''
+import netmiko
+import yaml
+import re
+from pprint import pprint
+
+
+def send_config_commands(device, config_commands, verbose=True):
+    good = {}
+    bad = {}
+    if verbose:
+        print('Подключаюсь к', device['ip'], '...')
+    with netmiko.ConnectHandler(**device) as ssh:
+        for command in config_commands:
+            res = ssh.send_config_set(command)
+            match = re.search(r'(Invalid input detected at.* marker.|Incomplete command.|Ambiguous command:)', res)
+            if match:
+                bad[command] = res
+                print(f'''Команда "{command}" выполнилась с ошибкой "{match.group(1)}" на устройстве {device['ip']}''')
+            else:
+                good[command] = res
+    return good, bad
+
 
 # списки команд с ошибками и без:
 commands_with_errors = ['logging 0255.255.1', 'logging', 'i']
 correct_commands = ['logging buffered 20010', 'ip http server']
-
 commands = commands_with_errors + correct_commands
+
+dev_file = 'devices.yaml'
+with open(dev_file) as file:
+    devices = yaml.safe_load(file)
+r1, r2, r3 = devices
+result = send_config_commands(r1, commands)
+pprint(result, width=120)
+

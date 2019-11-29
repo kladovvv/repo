@@ -10,3 +10,26 @@
 
 Для проверки измените пароль на устройстве или в файле devices.yaml.
 '''
+import netmiko
+import yaml
+
+
+def send_show_command(device, command):
+    result = ''
+    for dev in device:
+        try:
+            with netmiko.ConnectHandler(**dev) as ssh:
+                ssh.enable()
+                result += ssh.send_command(command) + '\n'
+        except netmiko.ssh_exception.AuthenticationException as error:
+            print(error)
+    return result
+
+
+command = 'sh ip int br'
+dev_name = 'devices.yaml'
+
+with open(dev_name) as file:
+    device = yaml.safe_load(file)
+
+print(send_show_command(device, command))

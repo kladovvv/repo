@@ -40,7 +40,20 @@ R1#
 
 Скрипт должен отправлять команду command на все устройства из файла devices.yaml с помощью функции send_config_commands.
 '''
+import netmiko
+import yaml
 
-commands = [
-    'logging 10.255.255.1', 'logging buffered 20010', 'no logging console'
-]
+
+def send_config_commands(device, config_commands):
+        with netmiko.ConnectHandler(**device) as ssh:
+            res = ssh.send_config_set(config_commands)
+        return res
+
+
+commands = ['logging 10.255.255.1', 'logging buffered 20010', 'no logging console']
+dev_file = 'devices.yaml'
+with open(dev_file) as file:
+    devices = yaml.safe_load(file)
+r1, r2, r3 = devices
+result = send_config_commands(r1, commands)
+print(result)
