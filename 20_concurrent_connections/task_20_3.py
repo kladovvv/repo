@@ -35,8 +35,47 @@ Ethernet0/1                unassigned      YES NVRAM  administratively down down
 
 Проверить работу функции на устройствах из файла devices.yaml и словаре commands
 '''
+from netmiko import ConnectHandler
+from datetime import datetime
+from concurrent.futures import ThreadPoolExecutor
+import yaml
+from os import remove
+import logging
 
-commands = {'192.168.100.1': 'sh ip int br',
-            '192.168.100.2': 'sh arp',
-            '192.168.100.3': 'sh ip int br'}
 
+def send_command(device, command):
+    with ConnectHandler(**device) as ssh:
+        result = ssh.send_command(command)
+    return result
+
+
+def send_command_to_devices(devices, commands_dict, filename='output2.txt', limit=3):
+    try:
+        logging.info('Try to remove old file...')
+        remove(filename)
+        logging.info('Try to remove old file... success')
+    except FileNotFoundError:
+        logging.info('Nothing to remove')
+    start_time = datetime.now()
+    logging.info('Start: {}'.format(datetime.now()))
+    numbers = ['R1', 'R2', 'R3']
+    future_list = {}
+    with ThreadPoolExecutor(max_workers=limit) as executor:
+        for device, number in zip(devices, numbers):
+            future_list[number] = executor.submit(send_command, device, commands_dict[device['ip']])
+    with open(filename, 'a') as file:
+        for device, number in zip(devices, numbers):
+            file.write(number + '#' + commands_dict[device['ip']] + '\n')
+            file.write(future_list[number].result() + '\n')
+    logging.info('Stop: {}'.format(datetime.now()))
+    print(datetime.now() - start_time)
+
+
+with open('devices.yaml') as dev:
+    dev_dict = yaml.safe_load(dev)
+commands = {'192.168.23.2': 'sh ip int br',
+            '192.168.23.3': 'sh arp',
+            '192.168.23.4': 'sh ip int br'}
+logging.basicConfig(format='%(threadName)s %(name)s %(levelname)s: %(message)s', level=logging.INFO)
+logging.getLogger("paramiko").setLevel(logging.WARNING)
+send_command_to_devices(dev_dict, commands)

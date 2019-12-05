@@ -47,9 +47,57 @@ O        10.30.0.0/24 [110/20] via 192.168.100.1, 07:12:03, Ethernet0/0
 
 Проверить работу функции на устройствах из файла devices.yaml и словаре commands
 '''
+from netmiko import ConnectHandler
+from datetime import datetime
+from concurrent.futures import ThreadPoolExecutor
+import yaml
+from os import remove
+import logging
 
-commands = {'192.168.100.1': ['sh ip int br', 'sh arp'],
-            '192.168.100.2': ['sh arp'],
-            '192.168.100.3': ['sh ip int br', 'sh ip route | ex -']}
+
+def send_command(device, command_list):
+    result = []
+    ip = device['ip']
+    logging.info(f'START ===> datetime: {datetime.now().time()}, ip: {ip}')
+    with ConnectHandler(**device) as ssh:
+        for com in command_list:
+            result.append(ssh.send_command(com))
+    logging.info(f'STOP ===> datetime: {datetime.now().time()}, ip: {ip}')
+    return result
+
+
+def send_command_to_devices(devices, commands_dict, filename='output2.txt', limit=3):
+    try:
+        logging.info('Try to remove old file...')
+        remove(filename)
+        logging.info('Try to remove old file... success')
+    except FileNotFoundError:
+        logging.info('Nothing to remove')
+    start_time = datetime.now()
+    logging.info('Start: {}'.format(datetime.now()))
+    numbers = ['R1', 'R2', 'R3']
+    future_list = {}
+    with ThreadPoolExecutor(max_workers=limit) as executor:
+        for device, number in zip(devices, numbers):
+            future_list[number] = executor.submit(send_command, device, commands_dict[device['ip']])
+    with open(filename, 'a') as file:
+        for (key1, value1), (key2, value2) in zip(future_list.items(), commands_dict.items()):
+            for val1, val2 in zip(value1.result(), value2):
+                file.write(key1 + '#' + val2 + '\n')
+                file.write(val1 + '\n')
+    logging.info('Stop: {}'.format(datetime.now()))
+    print(datetime.now() - start_time)
+
+
+with open('devices.yaml') as dev:
+    dev_dict = yaml.safe_load(dev)
+commands = {'192.168.23.2': ['sh ip int br', 'sh arp'],
+            '192.168.23.3': ['sh arp'],
+            '192.168.23.4': ['sh ip int br', 'sh ip route | ex -']}
+logging.basicConfig(format='%(threadName)s %(name)s %(levelname)s: %(message)s', level=logging.INFO)
+logging.getLogger("paramiko").setLevel(logging.WARNING)
+send_command_to_devices(dev_dict, commands)
+
+
 
 

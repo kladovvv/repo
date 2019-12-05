@@ -1,0 +1,27 @@
+R1#sh ip int br
+Interface                  IP-Address      OK? Method Status                Protocol
+FastEthernet0/0            192.168.23.2    YES NVRAM  up                    up      
+FastEthernet0/1            unassigned      YES NVRAM  administratively down down    
+FastEthernet1/0            unassigned      YES NVRAM  administratively down down    
+Loopback0                  2.2.2.2         YES NVRAM  up                    up      
+R1#sh arp
+Protocol  Address          Age (min)  Hardware Addr   Type   Interface
+Internet  192.168.23.2            -   c401.08e4.0000  ARPA   FastEthernet0/0
+Internet  192.168.23.1            0   0050.56c0.0008  ARPA   FastEthernet0/0
+R2#sh arp
+Protocol  Address          Age (min)  Hardware Addr   Type   Interface
+Internet  192.168.23.3            -   c402.21f8.0000  ARPA   FastEthernet0/0
+Internet  192.168.23.1            0   0050.56c0.0008  ARPA   FastEthernet0/0
+R3#sh ip int br
+Interface                  IP-Address      OK? Method Status                Protocol
+FastEthernet0/0            192.168.23.4    YES NVRAM  up                    up      
+FastEthernet0/1            unassigned      YES NVRAM  administratively down down    
+FastEthernet1/0            unassigned      YES NVRAM  administratively down down    
+Loopback0                  4.4.4.4         YES NVRAM  up                    up      
+R3#sh ip route | ex -
+
+Gateway of last resort is not set
+
+     4.0.0.0/32 is subnetted, 1 subnets
+C       4.4.4.4 is directly connected, Loopback0
+C    192.168.23.0/24 is directly connected, FastEthernet0/0
