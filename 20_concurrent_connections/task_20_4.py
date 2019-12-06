@@ -82,3 +82,49 @@ R3#
 
 Для выполнения задания можно создавать любые дополнительные функции.
 '''
+import yaml
+from netmiko import ConnectHandler
+from concurrent.futures import ThreadPoolExecutor
+from os import remove
+
+
+def send_show(device, command):
+    with ConnectHandler(**device) as ssh:
+        result = ssh.send_command(command)
+    return result
+
+
+def send_config(device, command_list):
+    with ConnectHandler(**device) as ssh:
+        result = ssh.send_config_set(command_list)
+    return result
+
+
+def send_commands_to_devices(devices, show=None, config=None, filename='output3.txt', limit=3):
+    try:
+        remove(filename)
+    except FileNotFoundError:
+        pass
+    routers = ['R1#', 'R2#', 'R3#']
+    with ThreadPoolExecutor(max_workers=limit) as executor:
+        future_list = []
+        if show:
+            for device in devices:
+                future = executor.submit(send_show, device, show)
+                future_list.append(future.result())
+        elif config:
+            for device in devices:
+                future = executor.submit(send_config, device, config)
+                future_list.append(future.result())
+    with open(filename, 'a') as file:
+        for fut, rtr in zip(future_list, routers):
+            if show:
+                file.write(rtr + show + '\n')
+                file.write(fut + '\n')
+            elif config:
+                file.write(fut + '\n')
+
+
+with open('devices.yaml') as dev:
+    dev_dict = yaml.safe_load(dev)
+send_commands_to_devices(dev_dict, config=['router ospf 55', 'network 0.0.0.0 255.255.255.255 area 0'])
