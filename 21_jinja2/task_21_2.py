@@ -24,3 +24,7 @@
 В качестве данных, используйте информацию из файла data_files/router_info.yml
 
 '''
+from task_21_1 import generate_config
+
+
+generate_config('templates/cisco_router_base.txt', 'data_files/router_info.yml')
