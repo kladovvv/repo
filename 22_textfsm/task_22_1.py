@@ -13,4 +13,19 @@
 Проверить работу функции на выводе команды output/sh_ip_int_br.txt и шаблоне templates/sh_ip_int_br.template.
 
 '''
+import textfsm
+from tabulate import tabulate
 
+
+def parse_command_output(template, command_output):
+    res_list = []
+    with open(template) as templ, open(command_output) as comm:
+        text = textfsm.TextFSM(templ)
+        result = text.ParseText(comm.read())
+        res_list.append(text.header)
+        res_list.extend(result)
+    return res_list
+
+
+if __name__ == '__main__':
+    print(tabulate(parse_command_output('templates/sh_ip_int_br.template', 'output/sh_ip_int_br.txt'), headers='firstrow'))
