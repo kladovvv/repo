@@ -27,3 +27,7 @@ interface Gi0/10
 Не копируйте код функции generate_config.
 
 '''
+from task_21_1 import generate_config
+
+
+generate_config('templates/add_vlan_to_switch.txt', 'data_files/add_vlan_to_switch.yaml')

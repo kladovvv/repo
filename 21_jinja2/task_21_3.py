@@ -35,3 +35,7 @@
 
 
 '''
+from task_21_1 import generate_config
+
+
+generate_config('templates/ospf.txt', 'data_files/ospf.yml')
