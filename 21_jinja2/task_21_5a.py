@@ -28,7 +28,27 @@
 '''
 
 from jinja2 import Environment, FileSystemLoader
-import os
+from netmiko import ConnectHandler
+
+
+def configure_vpn(src_device_params, dst_device_params, src_template, dst_template, vpn_data_dict):
+    env = Environment(loader=FileSystemLoader('templates'), trim_blocks=True, lstrip_blocks=True)
+    a_temp = env.get_template(src_template)
+    b_temp = env.get_template(dst_template)
+    print(show_connect(src_device_params, 'sh ip int br'))
+    print(show_connect(dst_device_params, 'sh ip int br'))
+
+
+def show_connect(device_params, sh_comm):
+    with ConnectHandler(**device_params) as ssh:
+        result = ssh.send_command(sh_comm)
+    return result
+
+
+def set_connect(device_params, set_comm):
+    with ConnectHandler(**device_params) as ssh:
+        result = ssh.send_config_set(set_comm)
+    return result
 
 
 data = {
@@ -39,15 +59,23 @@ data = {
     'tun_ip_2': '10.0.1.2 255.255.255.252'
 }
 
+src_device = {
+    'device_type': 'cisco_ios',
+    'ip': '192.168.23.2',
+    'username': 'cisco',
+    'password': 'cisco'
+}
 
-def create_vpn_config(template1, template2, data_dict):
-    temp_dir = os.path.split(template1)[0]
-    temp1 = os.path.split(template1)[1]
-    temp2 = os.path.split(template2)[1]
-    env = Environment(loader=FileSystemLoader(temp_dir), trim_blocks=True, lstrip_blocks=True)
-    a = env.get_template(temp1).render(data_dict)
-    b = env.get_template(temp2).render(data_dict)
-    return a, b
+dst_device = {
+    'device_type': 'cisco_ios',
+    'ip': '192.168.23.3',
+    'username': 'cisco',
+    'password': 'cisco'
+}
 
 
-print(create_vpn_config('templates/gre_ipsec_vpn_1.txt', 'templates/gre_ipsec_vpn_2.txt', data))
+configure_vpn(src_device,
+              dst_device,
+              'gre_ipsec_vpn_1.txt',
+              'gre_ipsec_vpn_2.txt',
+              data)
