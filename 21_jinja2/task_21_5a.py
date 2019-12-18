@@ -29,14 +29,19 @@
 
 from jinja2 import Environment, FileSystemLoader
 from netmiko import ConnectHandler
+import re
 
 
 def configure_vpn(src_device_params, dst_device_params, src_template, dst_template, vpn_data_dict):
     env = Environment(loader=FileSystemLoader('templates'), trim_blocks=True, lstrip_blocks=True)
     a_temp = env.get_template(src_template)
     b_temp = env.get_template(dst_template)
-    print(show_connect(src_device_params, 'sh ip int br'))
-    print(show_connect(dst_device_params, 'sh ip int br'))
+    tun1 = re.findall(r'Tunnel(\d+)', show_connect(src_device_params, 'sh ip int br | i Tun'))
+    tun2 = re.findall(r'Tunnel(\d+)', show_connect(dst_device_params, 'sh ip int br | i Tun'))
+    tun = max(tun1 + tun2)
+    vpn_data_dict['tun_num'] = str(int(tun) + 1)
+    print(set_connect(src_device_params, a_temp.render(vpn_data_dict)))
+    print(set_connect(dst_device_params, b_temp.render(vpn_data_dict)))
 
 
 def show_connect(device_params, sh_comm):
@@ -72,7 +77,6 @@ dst_device = {
     'username': 'cisco',
     'password': 'cisco'
 }
-
 
 configure_vpn(src_device,
               dst_device,
