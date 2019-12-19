@@ -18,5 +18,21 @@
 
 Проверить работу функции на примере вывода команды sh ip int br.
 '''
+from textfsm import clitable
+
 
 def parse_command_dynamic(command_output, attributes_dict, index_file, templ_path):
+    with open(command_output) as file:
+        out = file.read()
+    cli_t = clitable.CliTable(index_file, templ_path)
+    cli_t.ParseCmd(out, attributes_dict)
+    print(cli_t.FormattedTable())
+
+
+output = 'output\sh_ip_int_br.txt'
+comm = 'sh ip int br'
+vend = 'Cisco'
+attributes = {'Command': comm, 'Vendor': vend}
+index = 'index'
+templ = 'templates'
+parse_command_dynamic(output, attributes, index, templ)
