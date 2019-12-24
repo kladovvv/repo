@@ -1,0 +1,9 @@
+---
+
+- name: Run show command on routers
+  hosts: routers
+
+  tasks:
+    - name: run sh ip int br
+      raw: sh ip int br | ex unass
+
