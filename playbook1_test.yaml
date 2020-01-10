@@ -3,7 +3,25 @@
 - name: Run show command on routers
   hosts: routers
 
+  vars:
+    ntp_server: 192.168.100.10
+    log_server: 192.168.100.10
+    users:
+      user1: pass1
+
   tasks:
     - name: run sh ip int br
-      raw: sh ip int br | ex unass
+      raw: sh ip int br
+      register: sh_ip_int_result
 
+    - name: Debug registered var
+      debug: var=sh_ip_int_result.stdout_lines
+
+    - name: run sh ip route
+      raw: sh ip route
+      register: sh_ip_route_result
+
+    - name: Debug registered var 2
+      debug:
+        msg: "Error"
+      when: "'192.168.100.0/24' in sh_ip_route_result.stdout_lines"

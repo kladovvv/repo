@@ -1,0 +1,18 @@
+---
+
+- name: Run show command on routers
+  hosts: routers
+  gather_facts: false
+
+  tasks:
+    - name: run sh ip int br
+      ios_command:
+        commands: ping 192.168.100.2 timeout 1
+        wait_for:
+          - result[0] contains 'Success rate is 100 percent'
+        retries: 2
+        interval: 12
+      register: sh_ip_int_result
+
+    - name: Debug registered var
+      debug: var=sh_ip_int_result.stdout_lines[0]

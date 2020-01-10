@@ -1,0 +1,13 @@
+---
+
+- name: Gather facts
+  hosts: routers
+
+  tasks:
+
+    - name: Facts
+      ios_facts:
+        gather_subset: all
+
+    - name: Show ansible_net_interfaces fact
+      debug: var=ansible_net_interfaces

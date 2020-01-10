@@ -1,0 +1,17 @@
+---
+
+- name: Run commands on routers
+  hosts: routers
+  gather_facts: false
+
+  tasks:
+
+    - name: Run commands
+      ios_command:
+        commands:
+          - sh arp
+          - sh ip int br
+      register: result
+
+    - name: Debug commands output
+      debug: var=result.stdout_lines

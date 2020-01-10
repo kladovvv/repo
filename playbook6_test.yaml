@@ -1,0 +1,22 @@
+---
+
+- name: Show run command on router
+  hosts: routers
+  connection: local
+
+  tasks:
+
+    - name: Run sh ip int br
+      ntc_show_command:
+        connection: ssh
+        platform: "cisco_ios"
+        command: "sh ip int br"
+        host: "{{ inventory_hostname }}"
+        username: "cisco"
+        password: "cisco"
+        template_dir: "library/ntc-ansible/ntc-templates/templates"
+        delay: "1"
+        port: "22"
+      register: result
+
+    - debug: var=result

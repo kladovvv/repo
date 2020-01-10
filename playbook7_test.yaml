@@ -1,0 +1,13 @@
+---
+
+- name: Show run command on router
+  hosts: routers
+
+  vars:
+    ansible_connection: paramiko
+
+  tasks:
+    - name: Run sh ip int br
+      raw: sh ip int br
+      register: result
+    - debug: var=result.stdout_lines

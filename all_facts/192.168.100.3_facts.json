@@ -1,0 +1,78 @@
+{
+    "ansible_facts": {
+        "ansible_net_all_ipv4_addresses": [
+            "192.168.100.3"
+        ],
+        "ansible_net_all_ipv6_addresses": [],
+        "ansible_net_api": "cliconf",
+        "ansible_net_config": "!\nupgrade fpd auto\nversion 12.4\nservice timestamps debug datetime msec\nservice timestamps log datetime msec\nno service password-encryption\n!\nhostname R3\n!\nboot-start-marker\nboot-end-marker\n!\nlogging message-counter syslog\n!\nno aaa new-model\nip source-route\nno ip icmp rate-limit unreachable\nip cef\n!\n!\n!\n!\nno ip domain lookup\nip domain name cisco\nno ipv6 cef\n!\nmultilink bundle-name authenticated\n!\n!\n!\n!\n!\n!\n!\n!\n!\n!\n!\n!\n!\n!\n!\n!\nusername cisco privilege 15 secret 5 $1$sGU7$htjdlnTrqo7hR.or3evg91\narchive\n log config\n  hidekeys\n! \n!\n!\n!\n!\nip tcp synwait-time 5\nip ssh version 2\n!\n!\n!\n!\ninterface FastEthernet0/0\n ip address 192.168.100.3 255.255.255.0\n duplex half\n!\ninterface FastEthernet1/0\n no ip address\n shutdown\n duplex half\n!\nip forward-protocol nd\nno ip http server\nno ip http secure-server\n!\n!\n!\nno cdp log mismatch duplex\n!\n!\n!\n!\n!\n!\ncontrol-plane\n!\n!\n!\n!\n!\n!\n!\ngatekeeper\n shutdown\n!\n!\nline con 0\n exec-timeout 0 0\n privilege level 15\n logging synchronous\n stopbits 1\nline aux 0\n exec-timeout 0 0\n privilege level 15\n logging synchronous\n stopbits 1\nline vty 0 4\n logging synchronous\n login local\n transport input ssh\n!\nend",
+        "ansible_net_filesystems": [],
+        "ansible_net_filesystems_info": {},
+        "ansible_net_gather_network_resources": [],
+        "ansible_net_gather_subset": [
+            "interfaces",
+            "config",
+            "default",
+            "hardware"
+        ],
+        "ansible_net_hostname": "R3",
+        "ansible_net_image": "tftp://255.255.255.255/unknown",
+        "ansible_net_interfaces": {
+            "FastEthernet0/0": {
+                "bandwidth": 100000,
+                "description": null,
+                "duplex": null,
+                "ipv4": [
+                    {
+                        "address": "192.168.100.3",
+                        "subnet": "24"
+                    }
+                ],
+                "lineprotocol": "up",
+                "macaddress": "ca03.7cac.0000",
+                "mediatype": null,
+                "mtu": 1500,
+                "operstatus": "up",
+                "type": "DEC21140"
+            },
+            "FastEthernet1/0": {
+                "bandwidth": 100000,
+                "description": null,
+                "duplex": null,
+                "ipv4": [],
+                "lineprotocol": "down",
+                "macaddress": "ca03.7cac.001c",
+                "mediatype": null,
+                "mtu": 1500,
+                "operstatus": "administratively down",
+                "type": "DEC21140"
+            }
+        },
+        "ansible_net_iostype": "IOS",
+        "ansible_net_memfree_mb": 347571.78515625,
+        "ansible_net_memtotal_mb": 375887.72265625,
+        "ansible_net_model": "7206VXR",
+        "ansible_net_neighbors": {
+            "FastEthernet0/0": [
+                {
+                    "host": "R1.cisco",
+                    "port": "FastEthernet0/0"
+                },
+                {
+                    "host": "R2.cisco",
+                    "port": "FastEthernet0/0"
+                }
+            ]
+        },
+        "ansible_net_python_version": "3.7.3",
+        "ansible_net_serialnum": "4279256517",
+        "ansible_net_system": "ios",
+        "ansible_net_version": "12.4(24)T8",
+        "ansible_network_resources": {}
+    },
+    "changed": false,
+    "failed": false,
+    "warnings": [
+        "default value for `gather_subset` will be changed to `min` from `!config` v2.11 onwards"
+    ]
+}

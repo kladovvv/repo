@@ -1,0 +1,6 @@
+interface {{ lo.name }}
+ ip address {{ lo.ip }} {{ lo.mask }}
+!
+router ospf {{ process }}
+ router-id {{ router_id }}
+ network {{ intf.ip }} 0.0.0.0 area {{ intf.area }}

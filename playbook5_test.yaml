@@ -1,0 +1,14 @@
+---
+
+- name: Run jinja template on routers
+  hosts: routers
+
+  tasks:
+    - name: Config routers
+      ios_config:
+        src: templates/loop_ospf.j2
+      register: cgn
+
+    - name: Debug cgn
+      debug: var=cgn.updates
+      when: cgn.changed

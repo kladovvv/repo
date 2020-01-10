@@ -1,0 +1,31 @@
+---
+
+- name: Apply ACL INET-to-LAN to interface Fa1/0
+  hosts: 192.168.100.2
+  gather_facts: false
+
+  tasks:
+
+    - name: Config ACL
+      ios_config:
+        before:
+          - interface FastEthernet1/0
+          - no ip access-group INET-to-LAN in
+          - exit
+          - no ip access-list extended INET-to-LAN
+        parents:
+          - ip access-list extended INET-to-LAN
+        lines:
+          - permit tcp 10.0.1.0 0.0.0.255 any eq www
+          - permit tcp 10.0.1.0 0.0.0.255 any eq 22
+          - permit icmp any any
+          - permit tcp 10.0.1.0 0.0.0.255 any eq telnet
+        after:
+          - interface FastEthernet1/0
+          - ip access-group INET-to-LAN in
+        replace: block
+      register: cfg
+
+    - name: Debug cfg
+      debug: var=cfg.updates
+      when: cfg.changed

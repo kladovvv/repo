@@ -1,0 +1,18 @@
+---
+
+- name: Run cfg commands on routers
+  hosts: routers
+  gather_facts: false
+
+  tasks:
+
+    - name: Config routers
+      ios_config:
+        parents:
+          - interface Loopback0
+        lines:
+          - no ip address
+          - delay 1000
+        backup: yes
+        backup_options:
+          filename: "{{ inventory_hostname }}_config"

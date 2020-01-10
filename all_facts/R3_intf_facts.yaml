@@ -1,0 +1,24 @@
+FastEthernet0/0:
+    bandwidth: 100000
+    description: null
+    duplex: null
+    ipv4:
+    -   address: 192.168.100.3
+        subnet: '24'
+    lineprotocol: up
+    macaddress: ca03.7cac.0000
+    mediatype: null
+    mtu: 1500
+    operstatus: up
+    type: DEC21140
+FastEthernet1/0:
+    bandwidth: 100000
+    description: null
+    duplex: null
+    ipv4: []
+    lineprotocol: down
+    macaddress: ca03.7cac.001c
+    mediatype: null
+    mtu: 1500
+    operstatus: administratively down
+    type: DEC21140

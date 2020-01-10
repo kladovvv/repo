@@ -1,0 +1,20 @@
+[
+    {
+        "intf": "FastEthernet0/0",
+        "ipaddr": "192.168.100.1",
+        "proto": "up",
+        "status": "up"
+    },
+    {
+        "intf": "FastEthernet1/0",
+        "ipaddr": "unassigned",
+        "proto": "down",
+        "status": "administratively down"
+    },
+    {
+        "intf": "Loopback0",
+        "ipaddr": "unassigned",
+        "proto": "up",
+        "status": "up"
+    }
+]

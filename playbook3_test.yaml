@@ -1,0 +1,22 @@
+---
+
+- name: Collect IOS facts
+  hosts: routers
+
+  tasks:
+
+    - name: Facts
+      ios_facts:
+        gather_subset: all
+      register: ios_facts_result
+
+    - name: Create dir for facts
+      file:
+        path: ./all_facts/
+        state: directory
+        mode: 0755
+
+    - name: Copy facts to files
+      copy:
+        dest: "all_facts/{{inventory_hostname}}_facts.json"
+

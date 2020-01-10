@@ -1,0 +1,19 @@
+---
+
+- name: Gather facts
+  hosts: routers
+
+  tasks:
+
+    - name: Facts
+      ios_facts:
+        gather_subset: all
+
+    - name: Run sh ipv6 int br
+      ios_command:
+        commands: sh ipv6 int br
+      register: show_result
+
+    - name: Debug show_result
+      debug: var=show_result.stdout_lines
+      when: ansible_net_all_ipv6_addresses | length > 0
