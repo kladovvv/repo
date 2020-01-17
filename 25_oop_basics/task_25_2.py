@@ -29,3 +29,38 @@ In [5]: r1.send_show_command('sh ip int br')
 Out[5]: 'sh ip int br\r\nInterface                  IP-Address      OK? Method Status                Protocol\r\nEthernet0/0                192.168.100.1   YES NVRAM  up                    up      \r\nEthernet0/1                192.168.200.1   YES NVRAM  up                    up      \r\nEthernet0/2                190.16.200.1    YES NVRAM  up                    up      \r\nEthernet0/3                192.168.130.1   YES NVRAM  up                    up      \r\nEthernet0/3.100            10.100.0.1      YES NVRAM  up                    up      \r\nEthernet0/3.200            10.200.0.1      YES NVRAM  up                    up      \r\nEthernet0/3.300            10.30.0.1       YES NVRAM  up                    up      \r\nLoopback0                  10.1.1.1        YES NVRAM  up                    up      \r\nLoopback55                 5.5.5.5         YES manual up                    up      \r\nR1#'
 
 '''
+import telnetlib
+
+
+class CiscoTelnet:
+    def __init__(self, **params):
+        self._telnet = telnetlib.Telnet(params['ip'])
+        self._telnet.read_until(b'Username:')
+        self._telnet.write(params['username'].encode('ascii') + b'\n')
+        self._telnet.read_until(b'Password:')
+        self._telnet.write(params['password'].encode('ascii') + b'\n')
+        self._telnet.write(b'terminal length 0' + b'\n')
+        self._telnet.read_until(b'#')
+        self._telnet.read_until(b'#')
+
+    def _write_line(self, string):
+        self._telnet.write(string.encode('ascii') + b'\n')
+
+    def send_show_command(self, show):
+        self._write_line(show)
+        output = self._telnet.read_until(b'#').decode('utf-8')
+        print(output)
+
+    def close(self):
+        self._telnet.close()
+
+
+if __name__ == '__main__':
+    r1_params = {'ip': '192.168.100.1',
+                 'username': 'cisco',
+                 'password': 'cisco',
+                 'secret': 'cisco'}
+
+    r1 = CiscoTelnet(**r1_params)
+    r1.send_show_command('sh ip int br')
+    r1.close()

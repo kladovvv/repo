@@ -65,5 +65,50 @@ Out[5]:
   'status': 'up',
   'protocol': 'up'}]
 '''
+import telnetlib
+from textfsm import clitable
 
 
+class CiscoTelnet:
+    def __init__(self, **params):
+        self._telnet = telnetlib.Telnet(params['ip'])
+        self._telnet.read_until(b'Username:')
+        self._telnet.write(params['username'].encode('ascii') + b'\n')
+        self._telnet.read_until(b'Password:')
+        self._telnet.write(params['password'].encode('ascii') + b'\n')
+        self._telnet.write(b'terminal length 0' + b'\n')
+        self._telnet.read_until(b'#')
+        self._telnet.read_until(b'#')
+
+    def _write_line(self, string):
+        self._telnet.write(string.encode('ascii') + b'\n')
+
+    def send_show_command(self, show, parse=False, template='templates'):
+        if parse is False:
+            self._write_line(show)
+            output = self._telnet.read_until(b'#').decode('utf-8')
+            print(output)
+        elif parse is True:
+            result = []
+            attributes = {'Command': show, 'Vendor': 'cisco_ios'}
+            self._write_line(show)
+            output = self._telnet.read_until(b'#').decode('utf-8')
+            cli_t = clitable.CliTable(index_file='index', template_dir=template)
+            cli_t.ParseCmd(output, attributes)
+            for c in cli_t:
+                result.append(dict(zip(list(cli_t.header), list(c))))
+            print(result)
+
+    def close(self):
+        self._telnet.close()
+
+
+if __name__ == '__main__':
+    r1_params = {'ip': '192.168.100.1',
+                 'username': 'cisco',
+                 'password': 'cisco',
+                 'secret': 'cisco'}
+
+    r1 = CiscoTelnet(**r1_params)
+    r1.send_show_command('sh ip int br', parse=True)
+    r1.close()

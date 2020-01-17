@@ -41,3 +41,13 @@ topology_example = {('R1', 'Eth0/0'): ('SW1', 'Eth0/1'),
                     ('SW1', 'Eth0/3'): ('R3', 'Eth0/0')}
 
 
+class Topology:
+    def __init__(self, topo):
+        self.topology = {}
+        for k, v in topo.items():
+            if v not in self.topology.keys() and k not in self.topology.values():
+                self.topology.update({k: v})
+
+
+top = Topology(topology_example)
+print(top.topology)
