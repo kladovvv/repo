@@ -33,3 +33,33 @@ In [12]: print(ip_list)
 Для этого задания нет теста!
 '''
 
+
+class IPAddress:
+    def __init__(self, ip_mask):
+        self.prefix = ip_mask
+        ip_address, mask = ip_mask.split('/')
+        ip_list = ip_address.split('.')
+        if len(ip_list) == 4:
+            for i in ip_list:
+                if int(i) in range(0, 256):
+                    self.ip = ip_address
+                else:
+                    raise ValueError('Incorrect IPv4 address')
+        else:
+            raise ValueError('Incorrect IPv4 address')
+        if int(mask) in range(8, 32):
+            self.mask = int(mask)
+        else:
+            raise ValueError('Incorrect mask')
+
+    def __str__(self):
+        return f'IP address {self.prefix}'
+
+    def __repr__(self):
+        return f"IPAddress('{self.prefix}')"
+
+
+if __name__ == '__main__':
+    ip = IPAddress('10.1.255.1/24')
+    input()
+
