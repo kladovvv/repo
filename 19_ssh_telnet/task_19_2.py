@@ -45,9 +45,9 @@ import yaml
 
 
 def send_config_commands(device, config_commands):
-        with netmiko.ConnectHandler(**device) as ssh:
-            res = ssh.send_config_set(config_commands)
-        return res
+    with netmiko.ConnectHandler(**device) as ssh:
+        res = ssh.send_config_set(config_commands)
+    return res
 
 
 commands = ['logging 10.255.255.1', 'logging buffered 20010', 'no logging console']
